@@ -30,9 +30,14 @@ class ProductListViewTest(TestCase):
         response = self.client.get('/%d/' % (prod1.id,))
         self.assertContains(response, "Product")
 
+    def test_teg_view_work(self):
+        Tag.objects.create(name="green", slug='boom')
+        response = self.client.get('/boom/')
+        self.assertContains(response, "green")
+
     def test_tag_show_its_product(self):
         prod1 = Product.objects.create(title="Product")
-        tag1 = Tag.objects.create(name="green")
+        tag1 = Tag.objects.create(slug="green")
         prod1.tags.add(tag1)
         response = self.client.get('/%s/' % (tag1.slug,))
-        self.assertContains(response, prod1)
+        self.assertContains(response, tag1)
