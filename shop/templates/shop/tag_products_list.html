@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>{{ object.name }}</title>
+</head>
+<body>
+    <h1> {{ object.name }} </h1>
+    {% for product in object.product_set.all %}
+        <p>{{ product.title }}</p>
+    {% endfor %}
+</body>
+</html>
