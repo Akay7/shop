@@ -1,11 +1,10 @@
-<!DOCTYPE html>
-<html>
-<head lang="en">
-    <meta charset="UTF-8">
-    <title></title>
-</head>
-<body>
+{% extends 'shop/base.html' %}
+{% block title %}
+{{ object.title }}
+{% endblock %}
+
+{% block body %}
 {{ object.title }}
 {{ object.detail }}
-</body>
-</html>
+<a href="{% url 'add-to-cart' object.pk %}">Buy</a>
+{% endblock %}
