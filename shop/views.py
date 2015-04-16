@@ -29,13 +29,18 @@ class AjaxableResponseMixin(object):
 
 
 class ProductToCart(generic.View):
-    def get(self, request):
-        print("get")
-        return JsonResponse({"get":True})
-
     def post(self, request):
-        print("post")
+        product_id = request.POST.get("product_id")
+        cart = request.session.get("cart", {})
+
+        items = cart.get(product_id, 0) + 1
+        cart[product_id] = items
+
+        request.session["cart"] = cart
+        print(request.session["cart"])
+
         return JsonResponse({'boom': "true"})
+
 
 class ProductsListView(generic.ListView):
     model = Product
