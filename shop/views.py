@@ -2,17 +2,30 @@ from django.shortcuts import render
 from django.views import generic
 from django.http import JsonResponse, HttpResponse
 
-from .models import Product, Tag, Order, PositionInOrder
+from .models import Product, Tag, Order
 
 
 class OrderOperation(generic.View):
     def post(self, request):
         product_id = request.POST.get("product_id")
-        order = request.session.get("order", Order.objects.create())
+        order_id = request.session.get("order_id", None)
+
+        if order_id is None:
+            order = Order.objects.create()
+            request.session["order_id"] = order.id
+        else:
+            order = Order.objects.get(id=order_id)
 
         operation = request.POST.get("operation")
         if operation == "add":
             order.add_one(product_id)
+        elif operation == "del":
+            order.del_one(product_id)
+        elif operation == "set":
+            qty = request.POST.get("qty")
+            order.set_qty(product_id, qty)
+
+        return JsonResponse({'correct': "true"})
 
 
 class ProductToCart(generic.View):

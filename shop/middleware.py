@@ -8,4 +8,3 @@ class CartMiddleware:
         response.context_data['cart'] = request.session["cart"]
         #print(response.context_data)
         return response
-

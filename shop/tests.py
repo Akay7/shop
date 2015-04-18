@@ -2,7 +2,6 @@ from django.test import TestCase
 from .models import Product, Tag, Order, PositionInOrder
 
 
-# Create your tests here.
 class ProductListModelTest(TestCase):
     def test_products_list_show_products_title(self):
         prod1 = Product.objects.create(title="first product")
@@ -66,6 +65,8 @@ class OrderModelTest(TestCase):
     def test_add_one_to_product(self):
         self.order.add_one(self.prod.id)
         self.assertEqual(self.order.positioninorder_set.all()[0].qty, 4)
+        self.order.add_one(self.prod.id)
+        self.assertEqual(self.order.positioninorder_set.all()[0].qty, 5)
 
     def test_del_one_from_product(self):
         self.order.del_one(self.prod.id)
@@ -78,42 +79,30 @@ class OrderModelTest(TestCase):
     def test_get_position(self):
         getted_product = self.order.get_position(self.prod.id).product
         self.assertEqual(getted_product, self.prod)
-    '''
-    def test_rem_product(self):
-        self.order.rem(self.prod.id)
-        self.assertIsNone()
-    '''
+
 
 class OrderViewTest(TestCase):
-    '''
-    def test_add_to_cart(self):
-        prod = Product.objects.create(title="Product")
-        self.client.post('/product_cart/', {"product_id": prod.id, "action": "add"})
-        self.assertEqual(self.client.session["cart"].objects.all()[0], 1)
+    def setUp(self):
+        self.prod = Product.objects.create(title="Product")
+        self.url = '/order_operation/'
 
+    def test_save_to_session_add_to_cart(self):
+        self.client.post(self.url,
+                         {'product_id': self.prod.id, "operation": "add"})
 
-    def test_del_from_cart(self):
-        prod = Product.objects.create(title="Product")
-        self.client.post('/product_cart/', {"product_id": prod.id, "action": "add"})
-        self.assertEqual(self.client.session["cart"][str(prod.id)], 1)
-        self.assertEqual(self.client.session["cart"][str(prod.id)], 1)
-        # Now try del one item from cart
-        self.client.post('/product_cart/', {"product_id": prod.id, "action": "del"})
-    '''
+        order_id = self.client.session["order_id"]
+        pos_in_session = Order.objects.get(id=order_id).get_position(self.prod.id)
+        self.assertEqual(pos_in_session.qty, 1)
 
+        self.client.post(self.url,
+                         {'product_id': self.prod.id, "operation": "add"})
+        pos_in_session = Order.objects.get(id=order_id).get_position(self.prod.id)
+        self.assertEqual(pos_in_session.qty, 2)
 
-    """
-    def test_savind_to_session_add_to_cart(self):
-        prod = Product.objects.create(title="Product")
-        self.client.post('/order_operation/',
-                         {'product_id': prod.id, "operation": "add"})
-        pos_in_session = self.client.session["order"].positioninorder_set.all()[0]
-        print(pos_in_session)
-        self.assertEqual(pos_in_session.product.qty, 1)
+    def test_save_to_session_set_qty_for_position_in_cart(self):
+        self.client.post(self.url,
+                         {'product_id': self.prod.id, "operation": "set", "qty": "20"})
 
-        #self.client.post('/order_operation/', {'product_id': prod.id, "operation": "add"})
-        #self.assertEqual(self.client.session["order"][str(prod.id)], 2)
-    """
-# Testing add to cart, del, set
-# testing cart
-#
+        order_id = self.client.session["order_id"]
+        pos_in_session = Order.objects.get(id=order_id).get_position(self.prod.id)
+        self.assertEqual(pos_in_session.qty, 20)

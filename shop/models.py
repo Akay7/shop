@@ -39,32 +39,17 @@ class Order(models.Model):
         return position
 
     def add_one(self, id_product):
-        position, created = self.positioninorder_set.get_or_create(
-            product=Product.objects.get(id=int(id_product)),
-            defaults={
-                "order": self,
-            }
-        )
+        position = self.get_position(id_product)
         position.qty += 1
         position.save()
 
     def del_one(self, id_product):
-        position, created = self.positioninorder_set.get_or_create(
-            product=Product.objects.get(id=int(id_product)),
-            defaults={
-                "order": self,
-            }
-        )
+        position = self.get_position(id_product)
         position.qty -= 1
         position.save()
 
     def set_qty(self, id_product, qty):
-        position, created = self.positioninorder_set.get_or_create(
-            product=Product.objects.get(id=int(id_product)),
-            defaults={
-                "order": self,
-            }
-        )
+        position = self.get_position(id_product)
         position.qty = qty
         position.save()
 
@@ -75,7 +60,7 @@ class Order(models.Model):
 class PositionInOrder(models.Model):
     order = models.ForeignKey(Order)
     product = models.OneToOneField(Product)
-    qty = models.IntegerField(default=1)
+    qty = models.IntegerField(default=0)
     price = models.DecimalField(default=0, max_digits=15, decimal_places=2)
 
     def __str__(self):
