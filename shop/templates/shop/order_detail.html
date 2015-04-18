@@ -1,0 +1,12 @@
+{% extends 'shop/base.html' %}
+{% block title %}
+{{ object.title }}
+{% endblock %}
+
+{% block body %}
+{{ object.date }}
+{% for product in object.positioninorder_set.all %}
+    {% include 'shop/product.html' %}
+{% endfor %}
+
+{% endblock %}

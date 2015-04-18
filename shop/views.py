@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from django.views import generic
 from django.http import JsonResponse, HttpResponse
 
@@ -55,3 +54,15 @@ class ProductDetailView(generic.DetailView):
 class TagListView(generic.DetailView):
     model = Tag
     template_name = 'shop/tag_products_list.html'
+
+
+class OrderDetailView(generic.DetailView):
+    model = Order
+    template_name = 'shop/products_list.html'
+
+    def get_object(self, queryset=None):
+        # TODO: Refactoring for empty CART
+        order_id = self.request.session["order_id"]
+        order = Order.objects.get(id=order_id)
+
+        return order

@@ -4,7 +4,12 @@
 {% endblock %}
 
 {% block body %}
+<div class="ProductDetail">
 {{ object.title }}
-{{ object.detail }}
-<button id="id_add_to_cart">Buy</button>
+<div class="Detail">
+    {{ object.detail }}
+</div>
+{{ object.price }}
+<button>Buy</button>
+</div>
 {% endblock %}

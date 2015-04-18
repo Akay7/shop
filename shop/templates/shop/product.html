@@ -1,4 +1,4 @@
-<p>
+<li id="product_short_info_{{ product.id }}">
     <h2><a href="{% url 'product-detail' product.id %}">{{ product.title }}</a></h2>
-    <button class="add_to_cart" id="id_{{ product.id }}" product_id="{{ product.id }}">Buy</button>
-</p>
+    <button class="add_to_cart" product_id="{{ product.id }}">Buy</button>
+</li>

@@ -4,7 +4,9 @@
 {% endblock %}
 
 {% block body %}
+<ul class="productList">
 {% for product in object_list %}
 {% include 'shop/product.html' %}
 {% endfor %}
+</ul>
 {% endblock %}

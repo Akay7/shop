@@ -35,23 +35,23 @@ class ProductListViewTest(TestCase):
 class OrderViewTest(TestCase):
     def setUp(self):
         self.prod = Product.objects.create(title="Product")
-        self.url = '/order_operation/'
+        self.order_operations_url = '/order_operation/'
 
     def test_save_to_session_add_to_cart(self):
-        self.client.post(self.url,
+        self.client.post(self.order_operations_url,
                          {'product_id': self.prod.id, "operation": "add"})
 
         order_id = self.client.session["order_id"]
         pos_in_session = Order.objects.get(id=order_id).get_position(self.prod.id)
         self.assertEqual(pos_in_session.qty, 1)
 
-        self.client.post(self.url,
+        self.client.post(self.order_operations_url,
                          {'product_id': self.prod.id, "operation": "add"})
         pos_in_session = Order.objects.get(id=order_id).get_position(self.prod.id)
         self.assertEqual(pos_in_session.qty, 2)
 
     def test_save_to_session_set_qty_for_position_in_cart(self):
-        self.client.post(self.url,
+        self.client.post(self.order_operations_url,
                          {'product_id': self.prod.id, "operation": "set", "qty": "20"})
 
         order_id = self.client.session["order_id"]
@@ -60,7 +60,16 @@ class OrderViewTest(TestCase):
 
 
 class CartViewTest(TestCase):
+    def setUp(self):
+        self.prod1 = Product.objects.create(title="Product", price=40)
+        self.prod2 = Product.objects.create(title="Product2", price=11.2)
+        self.order_operations_url = '/order_operation/'
+
     def test_showing_details_about_products_in_cart(self):
-        prod1 = Product.objects.create(title="Product", price=100)
+        self.client.post(
+            self.order_operations_url,
+            {'product_id': self.prod1.id, "operation": "set", "qty": "20"}
+        )
+
         response = self.client.get('/cart/')
         self.assertContains(response, "Product")

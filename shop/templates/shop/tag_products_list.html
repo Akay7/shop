@@ -6,7 +6,9 @@
 {% block body %}
 <h1>{{ object.name }}</h1>
 <p>{{ object.detail }}</p>
+<ul class="productList">
 {% for product in object.product_set.all %}
     {% include 'shop/product.html' %}
 {% endfor %}
+</ul>
 {% endblock %}
