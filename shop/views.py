@@ -2,30 +2,17 @@ from django.shortcuts import render
 from django.views import generic
 from django.http import JsonResponse, HttpResponse
 
-from .models import Product, Tag
+from .models import Product, Tag, Order, PositionInOrder
 
 
-# Create your views here.
-class AjaxableResponseMixin(object):
-    """
-    Must using with FormView(CreateView)
-    """
-    def form_invalid(self, form):
-        response = super(AjaxableResponseMixin, self).form_invalid(form)
-        if self.request.is_ajax():
-            return JsonResponse(form.errors, status=400)
-        else:
-            return response
+class OrderOperation(generic.View):
+    def post(self, request):
+        product_id = request.POST.get("product_id")
+        order = request.session.get("order", Order.objects.create())
 
-    def form_valid(self):
-        response = super(AjaxableResponseMixin, self).form_valid(form)
-        if self.request.is_ajax():
-            data = {
-                'pk': self.object.pk,
-            }
-            return JsonResponse(data)
-        else:
-            return response
+        operation = request.POST.get("operation")
+        if operation == "add":
+            order.add_one(product_id)
 
 
 class ProductToCart(generic.View):
@@ -37,7 +24,7 @@ class ProductToCart(generic.View):
         cart[product_id] = items
 
         request.session["cart"] = cart
-        print(request.session["cart"])
+        #print(request.session["cart"])
 
         return JsonResponse({'boom': "true"})
 

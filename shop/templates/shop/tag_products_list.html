@@ -4,7 +4,8 @@
 {% endblock %}
 
 {% block body %}
-<h1> {{ object.name }} </h1>
+<h1>{{ object.name }}</h1>
+<p>{{ object.detail }}</p>
 {% for product in object.product_set.all %}
     {% include 'shop/product.html' %}
 {% endfor %}
