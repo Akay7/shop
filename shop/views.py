@@ -24,21 +24,9 @@ class OrderOperation(generic.View):
             qty = request.POST.get("qty")
             order.set_qty(product_id, qty)
 
+        # todo: Return added object in JSON or
+        # Correct/Not correct response for deleting object
         return JsonResponse({'correct': "true"})
-
-
-class ProductToCart(generic.View):
-    def post(self, request):
-        product_id = request.POST.get("product_id")
-        cart = request.session.get("cart", {})
-
-        items = cart.get(product_id, 0) + 1
-        cart[product_id] = items
-
-        request.session["cart"] = cart
-        #print(request.session["cart"])
-
-        return JsonResponse({'boom': "true"})
 
 
 class ProductsListView(generic.ListView):
@@ -58,11 +46,13 @@ class TagListView(generic.DetailView):
 
 class OrderDetailView(generic.DetailView):
     model = Order
-    template_name = 'shop/products_list.html'
+    template_name = 'shop/order_detail.html'
 
     def get_object(self, queryset=None):
         # TODO: Refactoring for empty CART
-        order_id = self.request.session["order_id"]
-        order = Order.objects.get(id=order_id)
-
+        if "order_id" in self.request.session:
+            order_id = self.request.session["order_id"]
+            order = Order.objects.get(id=order_id)
+        else:
+            order = Order.objects.create()
         return order

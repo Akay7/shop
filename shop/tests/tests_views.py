@@ -60,12 +60,11 @@ class OrderViewTest(TestCase):
 
 
 class CartViewTest(TestCase):
-    def setUp(self):
+    def test_showing_details_about_products_in_cart(self):
         self.prod1 = Product.objects.create(title="Product", price=40)
         self.prod2 = Product.objects.create(title="Product2", price=11.2)
         self.order_operations_url = '/order_operation/'
 
-    def test_showing_details_about_products_in_cart(self):
         self.client.post(
             self.order_operations_url,
             {'product_id': self.prod1.id, "operation": "set", "qty": "20"}
@@ -73,3 +72,7 @@ class CartViewTest(TestCase):
 
         response = self.client.get('/cart/')
         self.assertContains(response, "Product")
+
+    def test_show_empty_cart_view(self):
+        response = self.client.get('/cart/')
+        self.assertContains(response, 'EMPTY')

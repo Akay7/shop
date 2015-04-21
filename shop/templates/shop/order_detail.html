@@ -4,9 +4,14 @@
 {% endblock %}
 
 {% block body %}
-{{ object.date }}
-{% for product in object.positioninorder_set.all %}
-    {% include 'shop/product.html' %}
+{{ object.created_date }}
+{% if object.positioninorder_set.all %}
+<h2>In your cart:</h2>
+{% for position in object.positioninorder_set.all %}
+    {{ position.product.title }} -- {{ position.qty }}
 {% endfor %}
+{% else %}
+    <h2>EMPTY</h2>
+{% endif %}
 
 {% endblock %}
