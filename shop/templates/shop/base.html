@@ -7,12 +7,16 @@
 
 </head>
 <body>
-Cart
+<h2>Cart</h2>
+{% if order %}
 <li>
-{% for item, qty in cart.items %}
-    <ul>{{ item }} -- {{ qty }} </ul>
+{% for position in order.positioninorder_set.all %}
+    <ul>{{ position.product.title }} -- {{ position.qty }}</ul>
 {% endfor %}
 </li>
+{% else %}
+    empty
+{% endif %}
 
 {% block body %}
 {% endblock %}
