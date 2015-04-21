@@ -15,8 +15,6 @@ class OrderOperation(generic.View):
         else:
             order = Order.objects.get(id=order_id)
 
-        order_id = order.id
-
         operation = request.POST.get("operation")
         if operation == "add":
             order.add_one(product_id)
@@ -46,15 +44,5 @@ class TagListView(generic.DetailView):
     template_name = 'shop/tag_products_list.html'
 
 
-# todo: Refactoring for middleware
-class OrderDetailView(generic.DetailView):
-    model = Order
+class OrderDetailView(generic.TemplateView):
     template_name = 'shop/order_detail.html'
-
-    def get_object(self, queryset=None):
-        if "order_id" in self.request.session:
-            order_id = self.request.session["order_id"]
-            order = Order.objects.get(id=order_id)
-        else:
-            order = Order.objects.create()
-        return order
