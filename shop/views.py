@@ -1,5 +1,6 @@
 from django.views import generic
-from django.http import JsonResponse, HttpResponse
+from django.core import serializers
+from django.http import JsonResponse, HttpResponse, HttpResponseNotFound, Http404
 
 from .models import Product, Tag, Order
 
@@ -27,6 +28,9 @@ class OrderOperation(generic.View):
         # todo: Return added object in JSON or
         # Correct/Not correct response for deleting object
         return JsonResponse({'correct': "true"})
+
+    def get(self, request):
+        raise Http404
 
 
 class ProductsListView(generic.ListView):

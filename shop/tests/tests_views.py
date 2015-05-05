@@ -60,11 +60,12 @@ class OrderViewTest(TestCase):
 
 
 class CartViewTest(TestCase):
-    def add_product_to_db_and_to_cart(self):
+    def setUp(self):
         self.prod1 = Product.objects.create(title="Product", price=40)
         self.prod2 = Product.objects.create(title="Goods2", price=11.2)
         self.order_operations_url = '/order_operation/'
 
+    def add_product_to_db_and_to_cart(self):
         self.client.post(
             self.order_operations_url,
             {'product_id': self.prod1.id, "operation": "set", "qty": "20"}
