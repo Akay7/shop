@@ -18,7 +18,7 @@ class OrderOperation(generic.View):
 
         operation = request.POST.get("operation")
         if operation == "add":
-            order.add_one(product_id)
+            return JsonResponse(order.add_one(product_id))
         elif operation == "del":
             order.del_one(product_id)
         elif operation == "set":

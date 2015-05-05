@@ -1,3 +1,4 @@
+import json
 from django.test import TestCase
 from shop.models import Product, Tag, Order, PositionInOrder
 
@@ -93,3 +94,24 @@ class CartViewTest(TestCase):
 
         response = self.client.get('/2/')
         self.assertContains(response, 'Product')
+
+    def test_add_to_cart_return_json_obj_with_added_product(self):
+        response = self.client.post(
+            self.order_operations_url,
+            {'product_id': self.prod1.id, "operation": "add"}
+        )
+
+        #print(type(response.content))
+        #print(response.content.decode())
+
+
+        data = json.loads(response.content.decode())
+        print(data)
+        self.assertEqual(response.status_code, 200)
+
+        #self.assertEqual(data, {"correct": "true"})
+        self.assertEqual(data, {"id": self.prod1.id,
+                                "title": self.prod1.title,
+                                "qty": 20
+                                })
+
